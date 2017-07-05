@@ -18,13 +18,13 @@ The program attempts to detect whether these are installed and fall back gracefu
 
 The flags mean:
 
-*-n* do NOT sort results (by default they are sorted longest to shortest)
+**-n** do NOT sort results (by default they are sorted longest to shortest)
 
-*-r* reverse sort (shortest to longest)
+**-r** reverse sort (shortest to longest)
 
-*-t* specify a time threshold in seconds, queries longer than this are considered LRQs
+**-t** specify a time threshold in seconds, queries longer than this are considered LRQs
 
-*-q* "queries only" i.e. only SC930 records QRY, REQUERY, QUEL and REQUEL. 
+**-q** "queries only" i.e. only SC930 records QRY, REQUERY, QUEL and REQUEL. 
 
 Multiple files can be specified. The DBMS pid and SESSION id of the LRQ will be taken from the filename. If the filename is not in the original format then this may not work.
 Results are stored in memory before output. For sufficiently large files and/or low enough time thresholds this may be a lot of memory, the -n option will reduce this if necessary.
@@ -37,11 +37,11 @@ If run without any parameters (and Tkinter is installed) SC930_LRQ will start in
 
 The slider and entry field at the top show the time threshold. This can be adjusted using the mouse or left and right keys, or by typing in the field. Changing the slider should update the field and vice-versa. The slider's scale will automatically adjust as you near the ends.
 
-Use the Add button to add to the file list and the Clear button to empty it. This allows you to add files from multiple directories if necessary.
+Use the **Add** button to add to the file list and the **Clear** button to empty it. This allows you to add files from multiple directories if necessary.
 
-The Sort Results check box specifies whether to sort the results. Qry's only limits the results to only query records as with -q in the CLI mode.
+The **Sort Results** check box specifies whether to sort the results. Qry's only limits the results to only query records as with -q in the CLI mode.
 
-Use the Find L.R.Q.s button to begin execution.
+Use the **Find L.R.Q.s** button to begin execution.
 
 The results may take some time to find as each file must be processed in turn and they may be large. As the files are scanned a progress bar will be shown.
 
@@ -51,7 +51,7 @@ The results are shown in a "card index" style interface.
 
 The **<<**, **<**, **>** and **>>** buttons are used to go to the first, previous, next and last query respectively. You can also type in the QryNo field to jump to a particular query. The current query is shown in the window title.
 
-The save to file button writes the LRQs to a file in a format similar to the CLI output.
+The **save to file** button writes the LRQs to a file in a format similar to the CLI output.
 
 ## example output
 
