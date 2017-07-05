@@ -1,19 +1,22 @@
-#SC930 Human Readable Format
+# SC930 Human Readable Format
 
 This is a program to re-format SC930 trace logs into a slightly more readable format. What this means is that the timestamps are converted into a readable date format rather than seconds since 1st Jan 1970, and the line type specifier is padded to an equal number of spaces so that the output lines up.
 
-##To compile the program
+## To compile the program
 
-cc -o hr_sc930 hr_sc930.c
+    cc -o hr_sc930 hr_sc930.c
 
-##To run the program
+## To run the program
 
     hr_sc930 sess_1234_12345678
 
 There are two optional flags:
--d means output the date as part of the timestamp. By default this is omitted. -nN means output the first N digits of the nano-seconds part of the timestamp.
 
-##Example Output
+**-d** means output the date as part of the timestamp. By default this is omitted. 
+
+**-nN** means output the first N digits of the nano-seconds part of the timestamp.
+
+## Example Output
 
 Given the file
 
