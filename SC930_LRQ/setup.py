@@ -31,7 +31,7 @@ executables = [
 # get version and URL strings from SC930_LRQ.py
 # scanning the source file means not having to have a module just for constants
 prog_vers = '0.0'
-prog_url = 'http://code.ingres.com/samples/python/SC930_LRQ/'
+prog_url = 'https://github.com/ActianCorp/SC930_Tools'
 try:
     fh = open('SC930_LRQ.py')
     for line in fh.readlines():

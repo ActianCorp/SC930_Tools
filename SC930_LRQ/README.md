@@ -2,6 +2,8 @@
 
 This is a Python program to find long-running queries (LRQs) from SC930 logs. It's similar to the AWK script *sc930_long_qry.awk* (see [awk version](awk_version)) in purpose although hopefully a little nicer to use.
 
+Current version is 0.13
+
 ## Requirements
 
 The script was written for Python 2.7. It's not currently compatible with Python 3. I've tested it with Python 2.6 but no earlier.
@@ -50,6 +52,7 @@ The results are shown in a "card index" style interface.
 ![screenshot1](images/SC930_LRQ_img2.png)
 
 The **<<**, **<**, **>** and **>>** buttons are used to go to the first, previous, next and last query respectively. You can also type in the QryNo field to jump to a particular query. The current query is shown in the window title.
+The two lines above the query box show a representation of the time-line. The black line is the overall timescale (earliest start query time to latest end time), and the red line represents the current query. 
 
 The **save to file** button writes the LRQs to a file in a format similar to the CLI output.
 

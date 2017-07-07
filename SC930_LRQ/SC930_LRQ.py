@@ -32,10 +32,10 @@ except:
 
 # SC930_LRQ_VER - version for SC930_LRQ
 # I intend to bump the minor version number for each checked in change.
-SC930_LRQ_VER = '0.12'
+SC930_LRQ_VER = '0.13'
 
 # link for latest version of the code
-SC930_LRQ_LNK = 'http://code.ingres.com/samples/python/SC930_LRQ/'
+SC930_LRQ_LNK = 'https://github.com/ActianCorp/SC930_Tools/'
 
 # list of query begins - these are queries with a ? delimiting the SC930 timestamp from the query text
 SC930_QQRY = ["QRY","QUEL","REQUEL","REQUERY"]
@@ -471,10 +471,9 @@ class SC930Chooser(Frame):
     def display_info(self):
         msg='SC930 Long-Running-Query Finder'
         msg = msg + '\n\nby Paul Mason'
-        msg = msg + '\n (c) Actian Corp 2015'
+        msg = msg + '\n (c) Actian Corp 2017'
         msg = msg + '\nSee %s for latest version' % SC930_LRQ_LNK
         msg = msg + '\nThis version %s' % SC930_LRQ_VER
-        msg = msg + '\n(for Keith Bolam)'
         tkMessageBox.showinfo(title='SC930 LRQ Finder',
                                    message=msg)
 
@@ -566,9 +565,9 @@ class SC930Chooser(Frame):
         if self.sorted.get() == 1:
             # FIXME: make this an option, "sort by"
             # sort by query length (original)
-            # LRQ_sorted = sorted(LRQ_list,key=lambda item: item[3], reverse=True)
-            # sort by begin time (Keith)
-            LRQ_sorted = sorted(LRQ_list,key=lambda item: item[1])
+            LRQ_sorted = sorted(LRQ_list,key=lambda item: item[3], reverse=True)
+            # sort by begin time
+            # LRQ_sorted = sorted(LRQ_list,key=lambda item: item[1])
             LRQ_list = []
         else:
             LRQ_sorted = LRQ_list
