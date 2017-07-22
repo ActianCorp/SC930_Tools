@@ -2,7 +2,7 @@
 
 This is a Python program to find long-running queries (LRQs) from SC930 logs. It's similar to the AWK script *sc930_long_qry.awk* (see [awk version](awk_version)) in purpose although hopefully a little nicer to use.
 
-Current version is 0.13
+Current version is 0.14
 
 ## Requirements
 
@@ -16,19 +16,29 @@ The program attempts to detect whether these are installed and fall back gracefu
 
 ### CLI mode
 
-    SC930_LRQ.py <-n> <-r> <-q> <-t time> <filename> [<filename>...]
+    SC930_LRQ.py <-n> <-r> <-q> <-t time> <-d> <-e> <-c csvfilename> <filename> [<filename>...]
 
 The flags mean:
 
 **-n** do NOT sort results (by default they are sorted longest to shortest)
 
-**-r** reverse sort (shortest to longest)
+**-d** sort in order of query start timestamp, default earliest time to latest
+
+**-e** sort in order query end timestamp, default earliest time to latest
+
+**-r** reverse default sort order
+
+**-c** produce output into a named CSV file instead of standard output
 
 **-t** specify a time threshold in seconds, queries longer than this are considered LRQs
 
-**-q** "queries only" i.e. only SC930 records QRY, REQUERY, QUEL and REQUEL. 
+**-q** "queries only" i.e. only SC930 records QRY, REQUERY, QUEL and REQUEL.
 
 Multiple files can be specified. The DBMS pid and SESSION id of the LRQ will be taken from the filename. If the filename is not in the original format then this may not work.
+
+User id that executed the query and database name that was executed within are also added to every record, if we can find the session begin record that contains this information.
+Also, cursor id data is added to Fetch, Close and Add cursor statements, to aid in tracing query flow.
+
 Results are stored in memory before output. For sufficiently large files and/or low enough time thresholds this may be a lot of memory, the -n option will reduce this if necessary.
 
 ### GUI mode
@@ -52,7 +62,7 @@ The results are shown in a "card index" style interface.
 ![screenshot1](images/SC930_LRQ_img2.png)
 
 The **<<**, **<**, **>** and **>>** buttons are used to go to the first, previous, next and last query respectively. You can also type in the QryNo field to jump to a particular query. The current query is shown in the window title.
-The two lines above the query box show a representation of the time-line. The black line is the overall timescale (earliest start query time to latest end time), and the red line represents the current query. 
+The two lines above the query box show a representation of the time-line. The black line is the overall timescale (earliest start query time to latest end time), and the red line represents the current query.
 
 The **save to file** button writes the LRQs to a file in a format similar to the CLI output.
 
@@ -64,16 +74,16 @@ The **save to file** button writes the LRQs to a file in a format similar to the
     Duration:   0000000000.000000001 secs
     DBMS PID:   11236
     Session ID: 2d3c560
-    
+
     Query:      select resolve_table( ~V ,  ~V )
     Begin:      1418810159/419273865
     End:        1418810159/419273866
     Duration:   0000000000.000000001 secs
     DBMS PID:   11236
     Session ID: 2d3c560
-    
+
     Found 314 queries that took longer than  0.000000 seconds
-    
+
 ## Windows installer package
 
 If you have Python installed you can run the program as above. However for convenience an MSI installer package is [available](windows). This will install two versions of the program - SC930_LRQ.exe and SC930_LRQ_gui.exe. The first of these works as described above i.e. CLI if used with arguments, GUI if not. However in GUI mode a command prompt window will appear. SC930_LRQ_gui.exe will launch into the GUI without the command prompt window and thus can be used for shortcuts.
