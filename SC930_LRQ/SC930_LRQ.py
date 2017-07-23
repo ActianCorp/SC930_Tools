@@ -22,10 +22,6 @@ try:
 except:
     tk_avail = False
 
-
-    class Frame(object):
-        pass
-
 from optparse import OptionParser
 
 # use ttk.Progressbar if possible (prettier)
@@ -36,6 +32,10 @@ try:
 except:
     real_pbar = False
 
+
+
+class Frame(object):
+    pass
 
 
 # SC930_LRQ_VER - version for SC930_LRQ
@@ -94,11 +94,6 @@ gui = False
 GRAPH_LENGTH = 660
 First_qry = 0
 Last_qry = 0
-
-
-# ignore a record
-def ignore():
-    pass
 
 
 # hit end of query record
@@ -718,7 +713,7 @@ def progress_bar(root, filelist):
         if l != -1:
             linecount += l
 
-        # set the progress bar step amount - make it roughly 0.5% of the total
+    # set the progress bar step amount - make it roughly 0.5% of the total
     pbar_step = int(linecount / 200)
     if pbar_step < PROGBAR_STEP:
         pbar_step = PROGBAR_STEP
