@@ -8,6 +8,7 @@ import os
 import sys
 import datetime
 import csv
+from tqdm import tqdm
 
 # handle user not having tk - a bit hacky but it works for now
 # later I'll split the GUI from the common/CLI code
@@ -34,6 +35,8 @@ try:
     real_pbar = True
 except:
     real_pbar = False
+
+
 
 # SC930_LRQ_VER - version for SC930_LRQ
 # I intend to bump the minor version number for each checked in change.
@@ -320,7 +323,7 @@ def cli_main(argv=sys.argv):
         return
 
     # otherwise run the FindLRQ on the files
-    for file in filelist:
+    for file in tqdm(filelist):
         FindLRQ(file, NANO_PER_SEC * options.thresh, None, options.qryOnly)
 
     if options.nosort:
