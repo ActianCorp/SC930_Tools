@@ -1,2 +1,2 @@
-6d71360d1ca9f160aeef74ad0a7140df *SC930_LRQ-amd64.msi
-8ee4009cd166d5a6693e9e024a3a0458 *SC930_LRQ-win32.msi
+9ebe1ee71f5b5aefb833c9bf7eddd451 *SC930_LRQ-amd64.msi
+94c045caad53b827cb3ce908b3160c32 *SC930_LRQ-win32.msi

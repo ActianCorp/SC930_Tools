@@ -32,7 +32,7 @@ except:
 
 # SC930_LRQ_VER - version for SC930_LRQ
 # I intend to bump the minor version number for each checked in change.
-SC930_LRQ_VER = '0.13'
+SC930_LRQ_VER = '0.14'
 
 # link for latest version of the code
 SC930_LRQ_LNK = 'https://github.com/ActianCorp/SC930_Tools/'
@@ -46,6 +46,8 @@ SC930_OQRY = ["ABORT", "ABSAVE", "ADD-CURSORID", "AUTOCOMMIT", "BGNTRANS", "CLOS
               "XA_PREP", "XA_RBCK", "XA_STRT", "XA_UNKNOWN"]
 # end of a query
 SC930_EQY = ["EQY"]
+# begin session
+SC930_BEGIN = ["SESSION BEGINS"]
 # record types to ignore
 SC930_KEYW = ["TDESC", "COL", "QEP","PARM", "PARMEXEC","IVW"]
 
@@ -88,7 +90,7 @@ def ignore():
 
 # hit end of query record
 def EndQry(qtext,begin_ts,end_ts,nano_thresh):
-    global First_qry, Last_qry
+    global First_qry, Last_qry, database_name
 
     begin_nano = GetTimestamp(begin_ts)
     end_nano = GetTimestamp(end_ts)
@@ -102,7 +104,7 @@ def EndQry(qtext,begin_ts,end_ts,nano_thresh):
             Last_qry = end_nano
 
         try:
-            LRQ_list.append([qtext,begin_ts,end_ts,dur,dbmspid,sessid])
+            LRQ_list.append([qtext,begin_ts,end_ts,dur,dbmspid,sessid,database_name])
         except:
             if gui:
                 tkMessageBox.showerror(title='Failed to expand list',
@@ -147,13 +149,14 @@ def scanfile(path):
 
 # find the LRQs in a file
 def FindLRQ(path,nano_thresh,Pwin,qryOnly):
-    global dbmspid, sessid, LRQ_list
+    global dbmspid, sessid, LRQ_list, database_name
 
 # get the DBMS pid and SESSION id from the file name if we can
     fpath = os.path.basename(path)
     sess_str = fpath[:5]
     dbmspid="<dbmspid>"
     sessid = "<session>"
+    database_name = "<database>"
     if sess_str == "sess_":
         sess_parts = fpath.split("_")
         if len(sess_parts) == 3:
@@ -195,6 +198,8 @@ def FindLRQ(path,nano_thresh,Pwin,qryOnly):
 # split line #1 - get everything before and after first ':'
         words = line.split(":",1)
         rectype = words[0].rstrip('\n')
+        rwords = rectype.split("(",1)
+        rectype = rwords[0]
 
         if rectype in SC930_QQRY:
 # for a new query-query get the timestamp and query text
@@ -220,6 +225,15 @@ def FindLRQ(path,nano_thresh,Pwin,qryOnly):
                 else:
                     start_found = False
                     num_qrys += 1
+        elif rectype in SC930_BEGIN:
+# for a SESSION BEGINS record
+            sbwords = words[1].split("(")
+            sver = sbwords[1].split(")")[0]
+            if sver > 8:
+                dname = sbwords[6]
+            else:
+                dname = sbwords[2]
+            database_name = dname.split(")")[0].rstrip()
 # for any other SC930 record type - ignore
         elif rectype in SC930_KEYW:
             pass
@@ -287,7 +301,9 @@ def cli_main(argv=sys.argv):
         dur = lrq[3]
         dbmspid = lrq[4]
         sessid = lrq[5]
+        dbname = lrq[6]
         print "\nQuery:     ", qtext
+        print "Database:   ", dbname
         print "Begin:      %s (%s)" % (GetNiceTime(begin_ts),begin_ts)
         print "End:        %s (%s)" % (GetNiceTime(end_ts),end_ts)
         print "Duration:   %020.9f secs" % (float (dur)/NANO_PER_SEC)
@@ -663,6 +679,7 @@ def output_win(root):
 
         for record in LRQ_sorted:
             of.write("Query:      %s\n" % record[0])
+            of.write("Database:   %s\n" % record[6])
             of.write("Begin:      %s (%s)\n" % (GetNiceTime(record[1]),record[1]))
             of.write("End:        %s (%s)\n" % (GetNiceTime(record[2]),record[2]))
             of.write("Duration:   %020.9f secs\n" % (float(record[3])/NANO_PER_SEC))
@@ -719,6 +736,8 @@ def output_win(root):
         Owin.dbms.configure(text=txt)
         txt = "%s" % LRQ_sorted[qno][5]
         Owin.session.configure(text=txt)
+        txt = "%s" % LRQ_sorted[qno][6]
+        Owin.dbname.configure(text=txt)
 
 # draw line for current query
         begin_nano = GetTimestamp(LRQ_sorted[qno][1])
@@ -851,10 +870,13 @@ def output_win(root):
     l5.grid(row=2,column=0,sticky=(W),padx=5,pady=5)
     Owin.dbms = Label(Owin, text="dbms", bd=3, relief=RIDGE)
     Owin.dbms.grid(row=2,column=1,padx=5,sticky=(E))
-    l6 = Label(Owin, text="Session id:")
+    l6 = Label(Owin, text="Session id/DB:")
     l6.grid(row=2,column=2,sticky=(W),padx=5,pady=5)
     Owin.session = Label(Owin, text="session", bd=3, relief=RIDGE)
     Owin.session.grid(row=2,column=3,padx=5,sticky=(E))
+    Owin.dbname = Label(Owin, text="dbname", bd=3, relief=RIDGE)
+    Owin.dbname.grid(row=2, column=4, padx=5, sticky=(W))
+
 
 # add canvas to draw graph on
     Owin.graphcanv = Canvas(Owin,width=GRAPH_LENGTH,height=25)
