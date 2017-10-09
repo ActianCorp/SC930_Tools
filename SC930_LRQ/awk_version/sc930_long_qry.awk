@@ -14,7 +14,33 @@
 #    Created.
 # 21-Jun-2012 (maspa05)
 #    Add START_FOUND flag so we skip over any initial EQY without a Start.
+# 09-Oct-2017 (maspa05)
+#    Add GetDBName() to report database name with query
 #
+
+# GetDBName() - Return the database name from a BEGINS record
+#
+# Parameters:
+#     InputStr - the whole record line
+#
+# Output:
+#     Return value is database name
+#
+function GetDBName(InputStr)
+{
+    split(InputStr,a,"(");
+    END_POS=index(a[2],")");
+    SC930_VER=int(substr(a[2],1,END_POS-1));
+    if (SC930_VER > 8) {
+	    DBNAME=a[8];
+    } else { 
+	    DBNAME=a[3];
+    }
+
+    END_POS=index(DBNAME,")");
+    DBNAME=substr(DBNAME,1,END_POS-1);
+    return(DBNAME);
+}
 
 # GetTimestamp() - Return a timestamp value for an SC930 record line
 #
@@ -43,8 +69,8 @@ function GetTimestamp(InputStr,EndDelim)
     IND=index(InputStr,":");
     TMP=substr(InputStr,IND+1);
     IND=index(TMP,EndDelim);
-    RAWTS=substr(TMP,0,IND-1);
     RESTRECORD=substr(TMP,IND+1);
+    RAWTS=sprintf("%d/%09d",SECS,NANO);
 
     return(TS);
 }
@@ -82,10 +108,19 @@ BEGIN   {
 # SC930 traces can start mid-query so use this flag to indicate when we hit
 # our first start
            START_FOUND=0;
+
+# set an initial database name. This will be overwritten when we get to a SESSION
+# BEGINS record but as the file may start in the middle of a sessions let's have
+# something to use 
+	   DATABASE_NAME="<unknown>";
         }
 
+# For a SESSION BEGINS record type record the database name
 # The following record types are all the start of query in one form or another.
 #
+
+/^SESSION BEGINS\(/	{ DATABASE_NAME = GetDBName($0); }
+
 # QRY, QUERY, QUEL and REQUEL are all queries with actual query text
 #   - query delimiter is ? and no need for a prefix
 #
@@ -164,6 +199,7 @@ BEGIN   {
                 QDUR=QEND_TS-QBEGIN_TS;
                 if (QDUR > THRESH_NANO) {
                     printf("\nQuery: %s\n",QTEXT);
+                    printf("Database: %s\n",DATABASE_NAME);
                     printf("Begin: %s\nEnd:   %s\n", QBEGIN_RAWTS, QEND_RAWTS);
                     printf("Time taken: %9.2fsecs\n", (QDUR/NANO_PER_SEC));
                 }
