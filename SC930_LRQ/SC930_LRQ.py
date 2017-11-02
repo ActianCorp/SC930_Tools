@@ -56,7 +56,7 @@ SC930_OQRY = ["ABORT", "ABSAVE", "ADD-CURSORID", "AUTOCOMMIT", "BGNTRANS", "CLOS
 SC930_EQY = ["EQY"]
 
 # Session management record types
-SC930_BSESS = ["SESSION BEGINS(14)"]
+SC930_BSESS = ["SESSION BEGINS"]
 SC930_ESESS = ["SESSION ENDS"]
 
 # record types to ignore
@@ -214,6 +214,10 @@ def FindLRQ(path, nano_thresh, Pwin, qryOnly):
         # split line #1 - get everything before and after first ':'
         words = line.split(":", 1)
         rectype = words[0].rstrip('\n')
+
+        # Begin session has a bracketed expression at the end of the token that varies according to the server
+        # version that produced it, so remove this in a general way before progressing
+        rectype = re.sub('\([0-9]*\)', '', rectype)
 
         if rectype in SC930_QQRY:
             # for a new query-query get the timestamp and query text
