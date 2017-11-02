@@ -2,7 +2,7 @@
 
 This is a Python program to find long-running queries (LRQs) from SC930 logs. It's similar to the AWK script *sc930_long_qry.awk* (see [awk version](awk_version)) in purpose although hopefully a little nicer to use.
 
-Current version is 0.14
+Current version is 0.15
 
 ## Requirements
 
@@ -36,7 +36,7 @@ The flags mean:
 
 Multiple files can be specified. The DBMS pid and SESSION id of the LRQ will be taken from the filename. If the filename is not in the original format then this may not work.
 
-User id that executed the query and database name that was executed within are also added to every record, if we can find the session begin record that contains this information.
+User id that executed the query and database name that was executed within are also added to every record, if we can find the "session begin" record that contains this information.
 Also, cursor id data is added to Fetch, Close and Add cursor statements, to aid in tracing query flow.
 
 Results are stored in memory before output. For sufficiently large files and/or low enough time thresholds this may be a lot of memory, the -n option will reduce this if necessary.
@@ -74,6 +74,8 @@ The **save to file** button writes the LRQs to a file in a format similar to the
     Duration:   0000000000.000000001 secs
     DBMS PID:   11236
     Session ID: 2d3c560
+    User ID:    tester
+    Database name: testdb
 
     Query:      select resolve_table( ~V ,  ~V )
     Begin:      1418810159/419273865
@@ -81,6 +83,8 @@ The **save to file** button writes the LRQs to a file in a format similar to the
     Duration:   0000000000.000000001 secs
     DBMS PID:   11236
     Session ID: 2d3c560
+    User ID:    tester
+    Database name: testdb
 
     Found 314 queries that took longer than  0.000000 seconds
 

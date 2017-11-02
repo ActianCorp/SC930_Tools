@@ -8,7 +8,14 @@ import os
 import sys
 import datetime
 import csv
-from tqdm import tqdm
+
+# TQDM is a nice progress bar for the CLI version, but is not a default part of Python, so use it
+# only if already installed.
+try:
+    from tqdm import tqdm
+    tqdm_avail = True
+except:
+    tqdm_avail = False
 
 # handle user not having tk - a bit hacky but it works for now
 # later I'll split the GUI from the common/CLI code
@@ -322,8 +329,13 @@ def cli_main(argv=sys.argv):
         return
 
     # otherwise run the FindLRQ on the files
-    for file in tqdm(filelist):
-        FindLRQ(file, NANO_PER_SEC * options.thresh, None, options.qryOnly)
+    # Provide a nice progress bar if possible - this can take a while with lots of large input files
+    if tqdm_avail:
+        for file in tqdm(filelist):
+            FindLRQ(file, NANO_PER_SEC * options.thresh, None, options.qryOnly)
+    else:
+        for file in filelist:
+            FindLRQ(file, NANO_PER_SEC * options.thresh, None, options.qryOnly)
 
     if options.nosort:
         LRQ_sorted = LRQ_list
@@ -387,7 +399,7 @@ def cli_main(argv=sys.argv):
             print "Duration:   %020.9f secs" % (float(dur) / NANO_PER_SEC)
             print "DBMS PID:  ", dbmspid
             print "Session ID:", sessid
-            print "User ID:", user_id
+            print "User ID:   ", user_id
             print "Database name:", database_name
 
     if len(LRQ_sorted) == 1:
