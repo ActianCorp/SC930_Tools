@@ -40,7 +40,7 @@ class Frame(object):
 
 # SC930_LRQ_VER - version for SC930_LRQ
 # I intend to bump the minor version number for each checked in change.
-SC930_LRQ_VER = '0.14'
+SC930_LRQ_VER = '0.15'
 
 # link for latest version of the code
 SC930_LRQ_LNK = 'http://code.ingres.com/samples/python/SC930_LRQ/'
