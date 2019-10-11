@@ -40,14 +40,9 @@ except:
     real_pbar = False
 
 
-
-class Frame(object):
-    pass
-
-
 # SC930_LRQ_VER - version for SC930_LRQ
 # I intend to bump the minor version number for each checked in change.
-SC930_LRQ_VER = '0.16'
+SC930_LRQ_VER = '0.17'
 
 # link for latest version of the code
 SC930_LRQ_LNK = 'http://code.ingres.com/samples/python/SC930_LRQ/'
@@ -584,10 +579,9 @@ class SC930Chooser(Frame):
     def display_info(self):
         msg = 'SC930 Long-Running-Query Finder'
         msg = msg + '\n\nby Paul Mason'
-        msg = msg + '\n (c) Actian Corp 2015'
+        msg = msg + '\n (c) Actian Corp 2015-2019'
         msg = msg + '\nSee %s for latest version' % SC930_LRQ_LNK
         msg = msg + '\nThis version %s' % SC930_LRQ_VER
-        msg = msg + '\n(for Keith Bolam)'
         tkMessageBox.showinfo(title='SC930 LRQ Finder',
                               message=msg)
 
@@ -625,7 +619,8 @@ class SC930Chooser(Frame):
         # select multiple files - however this can only be from one directory
         selectedfiles = tkFileDialog.askopenfilename(
             parent=None, title='Select SC930 Session file',
-            filetypes=[('SC930 session files', 'sess*'),
+            filetypes=[('SET SERVER TRACE file', 'qtrace*'),
+                       ('SC930 session files', 'sess*'),
                        ('All Files', '*')],
             multiple=True)
         if selectedfiles:
@@ -838,6 +833,8 @@ def output_win(root):
         Owin.session.configure(text=txt)
         txt = "%s" % LRQ_sorted[qno][6]
         Owin.dbname.configure(text=txt)
+        txt = "%s" % LRQ_sorted[qno][6]
+        Owin.dbname.configure(text=txt)
 
         # draw line for current query
         begin_nano = GetTimestamp(LRQ_sorted[qno][1])
@@ -933,9 +930,9 @@ def output_win(root):
             Right()
 
 
-        # create the window
-        # note most of the fields are labels where the text is the value
-        # the exceptions are the qryno field and the query text box
+    # create the window
+    # note most of the fields are labels where the text is the value
+    # the exceptions are the qryno field and the query text box
 
     Owin = Toplevel(root)
 
@@ -978,6 +975,8 @@ def output_win(root):
     l6.grid(row=2, column=2, sticky=(W), padx=5, pady=5)
     Owin.session = Label(Owin, text="session", bd=3, relief=RIDGE)
     Owin.session.grid(row=2, column=3, padx=5, sticky=(E))
+    Owin.dbname = Label(Owin, text="dbname", bd=3, relief=RIDGE)
+    Owin.dbname.grid(row=2, column=4, padx=5, sticky=(W))
 
     # add canvas to draw graph on
     Owin.graphcanv = Canvas(Owin, width=GRAPH_LENGTH, height=25)
